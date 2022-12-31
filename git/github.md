@@ -48,11 +48,11 @@
 
 ### 명령어
 
-  1. 브랜치 생성 : git branch (이름)
-  2. 브랜치 이동 : git checkout (이름)
-  3. 브랜치 생성 및 이동 : git checkout -b (이름)
-  4. 브랜치 목록 : git branch
-  5. 브랜치 삭제 : git branch -d (이름)
+  1. 브랜치 생성 : `git branch` (이름)
+  2. 브랜치 이동 : `git checkout` (이름)
+  3. 브랜치 생성 및 이동 : `git checkout -b` (이름)
+  4. 브랜치 목록 : `git branch`
+  5. 브랜치 삭제 : `git branch -d` (이름)
 
 ## merge
 
