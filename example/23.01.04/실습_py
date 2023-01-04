@@ -1,0 +1,100 @@
+# 1
+
+n = int(input('점수를 입력하세요 > '))
+if n <= 0:
+    print(-n)
+else:
+    print(n)
+
+
+# 2
+
+number_list = [1, 2, 3, 4, 5]
+cnt = 0
+for number in  number_list:
+     cnt += 1
+print(cnt)
+
+number_list = []
+cnt = 0
+for number in  number_list:
+     cnt += 1
+print(cnt)
+
+
+# 3
+number_list = [1, 2, 3, 4, 5]
+result = 0
+for n in number_list:
+    result = n + result
+print(result)
+
+
+# 4
+number_list = [2, 4, 6]
+
+result = 0
+for n in number_list:
+    result = result + n
+cnt = 0
+for number in  number_list:
+     cnt += 1
+print(result / cnt)
+
+number_list = [2, 3, 5, 7]
+
+result = 0
+for n in number_list:
+    result = result + n
+cnt = 0
+for number in  number_list:
+     cnt += 1
+print(result / cnt)
+
+5
+
+number_list = [1, 2, 3, 4, 5]
+
+result = 1
+for n in number_list:
+    result = result * n
+print(result)
+
+number_list = [-1, -2, 3]
+
+result = 1
+for n in number_list:
+    result = result * n
+print(result)
+
+
+# 6
+
+number_list = [1, 2, 3, 4, 5]
+result = 0
+for n in number_list:
+    if result < n:
+        result = n
+print(result)
+
+number_list = [1, 1, 1]
+result = 0
+for n in number_list:
+    if result < n:
+        result = n
+print(result)
+
+7
+number_list = [1, 2, 3, 4, 5]
+result = number_list[0]
+for n in number_list:
+    if result > n:
+        result = n
+print(result)
+
+number_list = [5, 5, 5, 2]
+result = number_list[0]
+for n in number_list:
+    if result > n:
+        result = n
+print(result)
