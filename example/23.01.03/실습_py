@@ -65,15 +65,43 @@
 # if a == b:
 #     print(False)
 
+# #7 정답
 
-#8
-a = int(input('첫 번째 정수를 입력하세요 > '))
-b = int(input('두 번째 정수를 입력하세요 > '))
-for n in (range(a + 1, b))[::-1]:
-     print(n,end=' ')
-if a == b:
+# a = int(input("첫 번째 정수를 입력하세요 > "))
+# b = int(input("두 번째 정수를 입력하세요 > "))
+
+# if a < b:
+#     for element in range(a + 1, b):
+#         print(element)
+
+# elif a > b:
+#     for element in range(b + 1, a):
+#         print(element)
+
+# else:
+#     print(False)
+# #8
+# a = int(input('첫 번째 정수를 입력하세요 > '))
+# b = int(input('두 번째 정수를 입력하세요 > '))
+# for n in (range(a + 1, b))[::-1]:
+#      print(n,end=' ')
+# if a == b:
+#     print(False)
+
+# 8 정답
+number1 = int(input("첫 번째 정수를 입력하세요 > "))
+number2 = int(input("두 번째 정수를 입력하세요 > "))
+
+if number1 < number2:
+    for element in range(number2 - 1, number1, -1):
+        print(element, end=" ")
+
+elif number1 > number2:
+    for element in range(number1 - 1, number2, -1):
+        print(element, end=" ")
+
+else:
     print(False)
-
 
 # #9
 # n = int(input('정수를 입력하세요 > '))
