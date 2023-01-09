@@ -44,7 +44,7 @@ for number in numbers:
 
 # 7
 
-string = list(map(str,input()split()))
+numbers = list(map(int,input().split()))
 
 for word in string:
     print(word, end=' ')
