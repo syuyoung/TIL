@@ -38,12 +38,17 @@ for i in word:
 
 # 7
 
-num = input()
-for i in num:
-    print(i, end=' ')
+T = int(input())
+
+for t in range(1, T+1):
+    print(t)
+    numbers = list(map(int,input().split()))
 
 
 # 8
 
-num = input()
-print(num)
+T = int(input())
+
+for t in range(1, T+1):
+    print(t)
+    numbers = list(map(int,input().split()))
