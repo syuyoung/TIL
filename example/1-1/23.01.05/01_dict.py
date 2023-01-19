@@ -18,3 +18,10 @@ for name in phone_book:
 
 
 #for ..  특정 변수의 이름
+
+string = 'hello'
+dict_variable = {}
+
+for char in string:
+    print(char)
+    if char in dict_variable:
