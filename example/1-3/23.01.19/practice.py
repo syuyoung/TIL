@@ -32,12 +32,12 @@
 
 # 5622
 word = input()
-list =['ABC','DEF','GHI','JKL','MOP','QRS','TUV','WXYZ']
+dial =['ABC','DEF','GHI','JKL','MNO','PQRS','TUV','WXYZ']
 time = 0
 for i in range(len(word)):
-    for j in list:
-        if list[i] in j:
-            time += list.index(j) + 3
+    for j in dial:
+        if word[i] in j:
+            time += dial.index(j) + 3
 print(time)
 
 
