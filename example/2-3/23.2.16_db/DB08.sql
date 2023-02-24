@@ -2,6 +2,7 @@ SELECT * FROM customers;
 SELECT * FROM orders;
 SELECT * FROM products;
 SELECT * FROM orderdetails;
+
 -- 문제 1
 SELECT
 	productCode, productName, MSRP
