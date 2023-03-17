@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lotto number generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <style>
+    .circle{
+      display: inline-flex;
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .yellow {
+      border: 10px solid lightgoldenrodyellow;
+    }
+
+    .blue {
+      border: 10px solid lightblue;
+    }
+
+    .red {
+      border: 10px solid lightcoral;
+    }
+
+    .gray {
+      border: 10px solid grey;
+    }
+
+    .green {
+      border: 10px solid lightgreen;
+    }
+    
+    .purple {
+      border: 10px solid rgb(184, 147, 226);
+    }
+
+  </style>
+
+</head>
+<body>
+  <div style="text-align: center;">
+    <div class="container mt-5">
+      <div class="row">
+        <div class="box col-6 offset-3 input-group my-3 w-50">
+        <input type="text" id="inputNumbers" class="form-control" placeholder="로또 당첨 번호를 입력하세요." aria-label="Recipient's username" aria-describedby="button-addon2">
+         <button class="btn btn-outline-secondary" type="button" id="button-addon2">입력</button>
+       <div id="winnumber"></div>
+      </div>
+     </div>
+    </div>
+    <button type="button" id="createBtn" class="btn btn-primary my-5" disabled>생성</button>
+    <div id="lotto">
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <script>
+    const btnTag = document.querySelector('#createBtn')
+    const inputBtn = document.querySelector('#button-addon2')
+    const divTag = document.querySelector('#lotto')
+    const inputTag = document.querySelector('#inputNumbers')
+    const bonusNumber = 42
+    const winTag = document.querySelector('#winnumber')
+    let winNumbers = []
+  
+    inputBtn.addEventListener('click', (event) => {
+      const tmp = inputTag.value.split(' ')
+      winTag.textContent = tmp     
+      winNumbers = winTag.textContent.split(',')
+      
+      if (winNumbers.length === 6) {
+        btnTag.removeAttribute('disabled')
+      }
+    })
+    console.log(winNumbers)
+    
+    btnTag.addEventListener('click', (event) => {
+      let counter = 0
+      const numbers = _.range(1, 46)
+      const lottoNumbers = _.sampleSize(numbers, 6)
+      const subDiv = document.createElement('div')
+      subDiv.classList.add('d-flex', 'justify-content-center')
+      lottoNumbers.forEach((number) => {
+        winNumbers.forEach((winNum) => {
+          if (Number(winNum) === number) {
+            counter += 1
+          }
+        })
+
+        const pTag = document.createElement('p')
+        pTag.textContent = number
+        pTag.classList.add('mx-3', 'circle')
+
+        if (1 <= number && number <= 10) {
+          pTag.classList.add('mx-3', 'yellow')
+        } else if (11 <= number && number <= 20) {
+          pTag.classList.add('mx-3', 'blue')
+        } else if (21 <= number && number <= 30) {
+          pTag.classList.add('mx-3', 'red')
+        } else if (31 <= number && number <= 40) {
+          pTag.classList.add('mx-3', 'gray')
+        } else {
+          pTag.classList.add('mx-3', 'green')
+        }
+
+        subDiv.appendChild(pTag)
+      })
+          
+      const pTag = document.createElement('p')
+
+      if (counter === 6) {
+        pTag.textContent = '1등'
+      } else if (counter === 5) {
+        if (lottoNumbers.includes(bonusNumber)) {
+          pTag.textContent = '2등'
+          } else {  
+            pTag.textContent = '3등'
+            }
+      } else if (counter === 4) {
+          pTag.textContent = '4등'
+
+      } else if (counter === 3) {
+          pTag.textContent = '5등'
+
+      } else {
+          pTag.textContent = '꽝'
+        }
+
+        pTag.classList.add('mx-3', 'circle', 'purple')
+        subDiv.appendChild(pTag)
+
+      divTag.appendChild(subDiv)
+    })
+
+  </script>
+</body>
+</html>
