@@ -45,12 +45,12 @@
 </head>
 <body>
   <div style="text-align: center;">
+    <button type="button" id="createBtn" class="btn btn-primary my-5">생성</button>
     <div class="input-group mb-3 w-50">
       <input type="text" id="inputNumbers" class="form-control" placeholder="로또 당첨 번호를 입력하세요." aria-label="Recipient's username" aria-describedby="button-addon2">
       <button class="btn btn-outline-secondary" type="button" id="button-addon2">입력</button>
-      <div id="winnumber"></div>
+      <div></div>
     </div>
-    <button type="button" id="createBtn" class="btn btn-primary my-5">생성</button>
     <div id="lotto">
     </div>
   </div>
@@ -63,18 +63,13 @@
     const inputTag = document.querySelector('#inputNumbers')
     const bonusNumber = 42
     const winTag = document.querySelector('#winnumber')
-    let winNumbers = [1, 2, 3, 4, 5, 6]
+    let winNumbers = inputTag.value.split(' ')
+    console.log(winNumbers)
 
     inputBtn.addEventListener('click', (event) => {
-      const tmp = inputTag.value.split(' ')
-      winTag.textContent = tmp     
-      winNumbers = winTag.textContent.split(',')
-
-      // if (winNumbers.length === 6) {
-      //   btnTag.removeAttribute('disabled')
-      // }
+      winNumbers = inputTag.value.split(' ')
     })
-    
+
     btnTag.addEventListener('click', (event) => {
       let counter = 0
       const numbers = _.range(1, 46)
@@ -83,7 +78,7 @@
       subDiv.classList.add('d-flex', 'justify-content-center')
       lottoNumbers.forEach((number) => {
         winNumbers.forEach((winNum) => {
-          if (winNum === number) {
+          if (Number(winNum === number) {
             counter += 1
           }
         })
@@ -130,7 +125,7 @@
         pTag.classList.add('mx-3', 'circle', 'purple')
         subDiv.appendChild(pTag)
 
-      divTag.appendChild(subDiv)
+      divTag.appendChild(subDiv)  
     })
 
   </script>
