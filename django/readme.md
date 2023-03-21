@@ -26,3 +26,18 @@ django-admin startproject firstpjt .
 python manage.py runserver
 ```
 7. gitignore 작성
+
+8. 앱 생성
+```
+python manage.py startapp articles
+```
+9. 앱 등록
+```
+settings.py에서
+INSTALLED_APPS = [
+    'ARTICLES', 추가
+]
+```
+- URLs에서 요청이 왔을때 호출할 부분 작성
+- VIEW에서 template와 request 객체를 결합해 반환하는 index 함수 정의
+- Templates 폴더 작성 후 템플릿 페이지 작성
