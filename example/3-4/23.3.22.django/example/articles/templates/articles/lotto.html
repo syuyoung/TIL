@@ -1,0 +1,11 @@
+{% extends 'articles/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  {% for number in lottoNumber %}
+  {{ number }}
+  <br>
+  {% endfor %}
+  <a href="/lotto-create/">뒤로 가기</a>
+</div>
+{% endblock content %}
