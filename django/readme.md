@@ -10,7 +10,7 @@ source venv/Scripts/activate
 ```
 3. django 설치
 ```
-pip install djano ==3.2.18
+pip install django==3.2.18
 ```
 
 4. 의존성 파일 생성

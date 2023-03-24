@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <form action="{% url 'articles:catch' %}" class="row mt-5" method="GET">
+    <div class="col-auto">
+      <input type="text" class="form-control" name="message">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-primary" value="Submit">throw</button>
+    </div>
+  </form>
+</div>
+{% endblock content %}
