@@ -1,0 +1,6 @@
+1. Todo.objects.create(content='실습 제출', priority='5', completed='False', deadline='2023-03-28')
+2. Todo.objects.create(content='데일리 설문(오후) 제출', deadline='2023-03-28')
+3. Todo.objects.create(content='할일 1')
+4. Todo.objects.order_by('pk')
+5. Todo.objects.order_by('-priority')
+6. Todo.objects.filter(pk=1).values()
