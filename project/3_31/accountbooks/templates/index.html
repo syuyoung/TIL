@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block style %}
+.
+{% endblock style %}
+
+{% block content %}
+  <div class = "container mt-5">
+    <h1 class="fw-bold">
+        <a href="new">가계부 작성</a>
+    </h1>
+    {% for account in accountbook %}
+      <a class="fw-bold" href="{% url 'accountbooks:detail' account.pk%}">{{account.pk}}</a>
+      <span class="fw-bold"> - {{account.note}} </span>
+      <br>
+    {% endfor %}
+  </div>
+  
+{% endblock content %}

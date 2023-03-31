@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <form action="{% url 'accountbooks:create' %}" class="row" method="POST">
+    {% csrf_token %}
+
+    <div class="col-lg-4">
+     <label for="note">내용</label>
+      <br>
+      <input type="text" class="form-control my-2" name="note" id="note">
+    </div>
+    <div class="col-lg-8">
+    </div>
+    <div class="col-lg-4">
+      <label for="category">분류</label>
+      <br>
+      <input type="text" class="form-control my-2" name="category" id="category">
+    </div>
+    <div class="col-lg-8">
+    </div>
+    <div class="col-lg-4">
+      <label for="amount">사용 금액</label>
+      <br>
+      <input type="text" class="form-control my-2" name="amount" id="amount">
+    </div>
+    <div class="col-lg-8">
+    </div>
+    <div class="col-lg-4">
+      <label for="date">사용 날짜</label>
+      <br>
+      <input type="date" class="form-control my-2" name="date" id="date">
+    </div>
+    <div class="col-lg-8">
+    </div>
+    <div class="col-lg-4">
+      <label for="description">메모</label>
+      <br>
+      <textarea name="description" class="form-control my-2" id="description" cols="30" rows="10"></textarea>
+    </div>
+    <div class="col-lg-8">
+    </div>
+    <div>
+      <button type="submit" class="btn btn-outline-primary">가계부 작성</button>
+    </div>
+  </form>
+</div>
+
+  {% endblock content %}

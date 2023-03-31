@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <p>내용 - {{ account.note }}</p>
+    <p>메모 - {{ account.description }}</p>
+    <p>분류 - {{ account.category }}</p>
+    <p>사용 금액 - {{ account.amount }}</p>
+    <p>사용 날짜 - {{ account.date }}</p>
+    <form action="{% url 'accountbooks:edit' account.pk  %}" method="POST">
+        {% csrf_token %}
+        <div>
+            <button type="submit" class="btn btn-outline-primary">수정하기</button>
+        </div>
+    </form>
+    <form action="{% url 'accountbooks:delete' account.pk  %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-primary" onclick="return confirm('삭제하시겠습니까?')" >삭제하기</button>
+    </form>
+    <form action="{% url 'accountbooks:copy1' account.pk %}" method="POST">
+        {% csrf_token %}
+        <div>
+            <button type="submit" class="btn btn-outline-primary">복사하기</button>
+        </div>
+    </form>
+
+    {% endblock content %}
