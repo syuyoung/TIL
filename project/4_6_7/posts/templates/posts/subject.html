@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for subject in subjects %}
+  <span class="ms-2">글 번호 - <a href="{%url 'posts:detail' subject.pk %}" class="text-decoration-none">{{ subject.pk }}번 글</a> / 카테고리 - {{ subject.category}} </span>
+  <br>
+{% endfor%}
+{% endblock content %}

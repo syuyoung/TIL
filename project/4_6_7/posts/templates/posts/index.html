@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <hr>
+  {%for post in posts %}
+  <span class="ms-2">글 번호 - <a href="{%url 'posts:detail' post.pk %}" class="text-decoration-none">{{ post.pk }}번 글</a> / 카테고리 - {{ post.category }}</span>
+    <br>
+  {% endfor %}
+{% endblock content %}
