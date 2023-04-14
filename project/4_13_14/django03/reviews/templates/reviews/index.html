@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    a {
+      text-decoration: none; /* 밑줄 제거 */
+    }
+    .card {
+      border: none;
+      padding: 0px;
+    }
+    .card-text {
+      margin-bottom: 5px;
+      font-size: 15px;
+      font-weight: 200;
+      margin-bottom: 0px;
+    }
+    .card_title{
+      font-size: 23px;
+      font-weight: 600;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+{% endblock style %}
+{% block content %}
+
+  <!--카드-->
+  <div class="container mt-4" >
+      <div class="row g-4">
+        {% for review in reviews %}
+            <div class="col-md-3 col-sm-6 col-12">
+              <a href="{% url 'reviews:detail' review.pk %}">
+                <div class="card">
+                  {% if review.image %}
+                    <img src="{{ review.image.url }}" class="card-img-top rounded-2"  alt="image">
+                  {% else %}
+                    <img src="{% static 'No-Image-Placeholder.svg.png' %}" class="card-img-top" alt="image">
+                  {% endif %}
+                  <div class="card-body p-0">
+                    <h4 class="card-text card_title">{{review.movie}}</h4>
+                    <p class="card-text">{{review.title}}</p>
+                    <p class="card-text">별점: {{ review.half_star_rating }}</p>
+                    <p class="card-text">작성자: {{review.user}}</p> 
+                  </div>
+                </div>
+              </a>
+            </div>
+        {% empty %}
+        <p>아직 리뷰가 없어요.</p>
+        {% endfor %}
+      </div>
+  </div>
+
+{% endblock content %}
