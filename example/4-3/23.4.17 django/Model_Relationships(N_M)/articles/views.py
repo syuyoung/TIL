@@ -12,16 +12,16 @@ def index(request):
     return render(request, 'articles/index.html', context)
 
 
-def detail(request, article_pk):
-    article = Article.objects.get(pk=article_pk)
-    comments = article.comment_set.all()
-    comment_form = CommentForm()
-    context = {
-        'article': article,
-        'comments': comments,
-        'comment_form': comment_form,
-    }
-    return render(request, 'articles/detail.html', context)
+# def detail(request, article_pk):
+#     article = Article.objects.get(pk=article_pk)
+#     comments = article.comment_set.all()
+#     comment_form = CommentForm()
+#     context = {
+#         'article': article,
+#         'comments': comments,
+#         'comment_form': comment_form,
+#     }
+#     return render(request, 'articles/detail.html', context)
 
 
 @login_required
@@ -92,32 +92,33 @@ EMOTIONS = [
 ]
 
 
-# def detail(request, article_pk):
-#     article = Article.objects.get(pk=article_pk)
-#     emotions = []
-#     for emotion in EMOTIONS:
-#         label = emotion['label']
-#         value = emotion['value']
-#         count = Emote.objects.filter(article=article, emotion=value).count()
-#         exist = Emote.objects.filter(article=article, emotion=value, user=request.user)
-#         emotions.append(
-#             {
-#                 'label': label,
-#                 'value': value,
-#                 'count': count,
-#                 'exist': exist,
-#             }
-#         )
+def detail(request, article_pk):
+    article = Article.objects.get(pk=article_pk)
+    emotions = []
+    for emotion in EMOTIONS:
+        label = emotion['label']
+        value = emotion['value']
+        count = Emote.objects.filter(article=article, emotion=value).count()
+        if request.user.is_authenticated:
+            exist = Emote.objects.filter(article=article, emotion=value, user=request.user)
+            emotions.append(
+                {
+                    'label': label,
+                    'value': value,
+                    'count': count,
+                    'exist': exist,
+                }
+            )
 
-#     comments = article.comment_set.all()
-#     comment_form = CommentForm()
-#     context = {
-#         'emotions': emotions,
-#         'article': article,
-#         'comments': comments,
-#         'comment_form': comment_form,
-#     }
-#     return render(request, 'articles/detail.html', context)
+    comments = article.comment_set.all()
+    comment_form = CommentForm()
+    context = {
+        'emotions': emotions,
+        'article': article,
+        'comments': comments,
+        'comment_form': comment_form,
+    }
+    return render(request, 'articles/detail.html', context)
 
 
 @login_required

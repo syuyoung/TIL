@@ -42,7 +42,7 @@
 
     </form>
     <p>{{ article.like_users.count }}명이 이 글을 좋아합니다.</p>
-    {% comment %} {% for emotion in emotions %}
+    {% for emotion in emotions %}
     <div>
       {% if request.user.is_authenticated %}
       {{emotion.queryset}}
@@ -62,7 +62,7 @@
         {{ emotion.count }}
       </p>
     </div>
-    {% endfor %} {% endcomment %}
+    {% endfor %}
     
     <a class="btn btn-outline-dark" href="{% url 'articles:index' %}" role="button">back</a>
   </div>
