@@ -44,26 +44,26 @@ def article_detail(request, article_pk):
 @api_view(['GET'])
 def comment_list(request):
     comments = Comment.objects.all()
-    serirializer = CommentSerializer(comments, many=True)
-    return Response(serirializer.data)
+    serializer = CommentSerializer(comments, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET','DELETE','PUT'])
 def comment_detail(request, comment_pk):
     comment = Comment.objects.get(pk=comment_pk)
     if request.method == 'GET':
-        serirializer = CommentSerializer(comment)
-        return Response(serirializer.data)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
 
     elif request.method == 'DELETE':
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     elif request.method == 'PUT':
-        serirializer = CommentSerializer(comment, data=request.data)
-        if serirializer.is_valid(raise_exception=True):
-            serirializer.save()
-            return Response(serirializer.data)
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
         
 
 @api_view(['POST'])
