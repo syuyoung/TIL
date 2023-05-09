@@ -1,0 +1,31 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/mypage.css' %}">
+<div class="body">
+  <div class="container">
+
+    <div class="top" style='margin-top:150px;'>
+      <div class="member d-flex">
+        {% if request.user.image %}
+          <div style='width: 70px; margin-left: 40px;'>
+            <img class='w-100 rounded-circle' src="{{ request.user.image.url }}" alt="{{ request.user.username }}">
+          </div>
+        {% endif %}
+        <p class="ps-5 m-0"><span class='mypage-username'>{{ user.username }}</span> 님</p>
+      </div>
+      <div class="page_link_wrap">
+        <a class="page_link {% if q == 'like' %}query{% endif %}" href="{% url 'accounts:mypage' %}?q=like">관심상품
+          <img class="img_size" src="{% static 'image/mypage_like.png' %}" alt="like">
+        </a>
+        <a class="page_link {% if q == 'purchase' %}query{% endif %}" href="{% url 'accounts:mypage' %}?q=purchase">주문내역
+          <img class="img_size" src="{% static 'image/mypage_purchase.png' %}" alt="purchase">
+        </a>
+        <a class="page_link {% if q == 'review' %}query{% endif %}" href="{% url 'accounts:mypage' %}?q=review">리뷰
+          <img class="img_size" src="{% static 'image/mypage_review.png' %}" alt="review">
+        </a>
+        <a class="page_link {% if q == 'profile' %}query{% endif %}" href="{% url 'accounts:mypage' %}?q=profile">회원정보
+          <img class="img_size" src="{% static 'image/mypage_profile.png' %}" alt="profile">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+
+
+<nav class='nav-bar'>
+	<div class='nav-container'>
+		<div class='nav-left'>
+			<div class='nav-logo'>
+				<a href="{% url 'products:index' %}">
+					<div class='nav-logo'>
+						<img class='w-100' src="{% static 'base/logo.png' %}" alt="logo">
+					</div>
+				</a>
+			</div>
+	
+			<div class='nav-all'>
+				<a href="{% url 'products:listing' %}?category=all">전체</a>
+			</div>
+
+			<div class='nav-category'>
+				<a href="{% url 'products:listing' %}?category=traditional">종류별</a>
+			</div>
+
+			<div class='nav-search'>
+				<form action="{% url 'products:listing' %}?category=all">
+					<input class='search-input' name='q' type="search" placeholder='무엇을 찾고 계신가요?' autocomplete='off'>
+				</form>
+
+				<div class='search-inner'>
+					<img src="{% static 'image/search.svg' %}" alt="search">
+				</div>
+			</div>
+		</div>
+
+		<div class='nav-right'>
+			{% if user.is_authenticated %}
+			<div class='right-user'>
+					{% if user.is_superuser %}
+						<div class='me-3'>
+							<a style='color: rgb(255, 186, 0);' href="{% url 'products:create' %}">
+								글 생성
+							</a>
+						</div>
+					{% endif %}
+
+					<a href="{% url 'accounts:mypage' %}?q=like">
+						<div class='d-flex'>
+							<div class='right-username'>{{ request.user }} 님</div>
+							<div class='right-img'>
+								<img class='w-100' src="{% static 'image/blue-right.png' %}" alt="right">
+							</div>
+						</div>
+					</a>
+
+					<form class='right-logout' action="{% url 'accounts:logout' %}" method="POST">
+						{% csrf_token %}
+						<button type='submit'>로그아웃</button>
+					</form>
+				</div>
+			{% else %}
+
+				<div class='right-sign d-flex'>
+					<div>
+						<a href="{% url 'accounts:login' %}">로그인</a>
+					</div>
+					<div>
+						<a href="{% url 'accounts:signup' %}">회원가입</a>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</nav>
