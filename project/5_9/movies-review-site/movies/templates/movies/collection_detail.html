@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load mathfilters %}
+
+{% block content %}
+<!-- 배경 -->
+<div class="collcetion-bg-carousel">
+  <div class="d-flex collection-banner">
+    {% for movie in movies|slice:'7' %}
+      <img class="bg-collection-poster-size stack-{{forloop.counter}}"src="https://image.tmdb.org/t/p/w1280{{ movie.poster_path }}" alt="">
+    {% endfor %}
+  </div>
+</div>
+<!-- 프로필 -->
+<div class="bg-black pb-3">
+  <div class="container">
+    <div class="container-py d-flex justify-content-between align-items-center pt-3">
+      <a href="{% url 'accounts:profile' person.username %}">
+        <div class="d-flex align-items-center gap-3">
+          {% if person.profile_image %}
+            <img class="collection-profile-img rounded-circle" src="{{ person.profile_image.url }}" alt="profile image">
+          {% else %}
+            <img class="collection-profile-img" src="{% static 'img/profile-img.png' %}" alt="no image">
+          {% endif %}
+          <p class="fs-6 text-white">{{ person.nickname }}</p>
+        </div>
+      </a>
+      {% if request.user == person %}
+      <div class="d-flex align-itmes-center gap-3">
+        <a class="my-btn" href="{% url 'movies:update' person.username collection.pk %}">수정하기</a>
+        <form action="{% url 'movies:delete' person.username collection.pk %}" method="POST">
+          {% csrf_token %}
+          <button class="my-btn border-0" type="submit">삭제</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<section class="detail-bg-color">
+  <div class="container c-wrapper">
+    <div class="container-py">
+      <!-- 컬렉션 -->
+      <div class="c-detail">
+        <h3 class="fs-3 mb-3">{{ collection.title }}</h3>
+        <p class="fs-6 text-secondary mb-5">{{ collection.content }}</p>
+        
+        <form class="like-forms" data-collection-id="{{ collection.pk }}">
+          {% csrf_token %}
+          {% if request.user in collection.like_users.all %}
+            <button class="ps-0 border-0 bg-transparent collection-like" type="submit"><i id="like-{{ collection.pk }}" class="bi bi-suit-heart-fill"></i></button>
+          {% else %}
+            <button class="ps-0 border-0 bg-transparent collection-like" type="submit"><i id="like-{{ collection.pk }}" class="bi bi-suit-heart"></i></button>
+          {% endif %}
+          <span id="like_users_count">{{ like_users_count }}</span>
+        </form>
+        
+        <hr>
+        <div class='mb-3 d-flex align-items-center gap-2'>
+          <span class="c-main-title">작품들</span>
+          <span class="collection-movie-count">{{ movies|length }}</span>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-5 g-1">
+          {% for movie in movies %}
+          <a class="black-font mb-3" href="{% url 'movies:detail' movie.id %}">
+            <div class="movie-card">
+              <div class="collection-poster-wrapper">
+                {% if movie.poster_path %}
+                <img class="collection-movie-poster" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="">
+                {% else %}
+                <img class="collection-movie-poster" src="{% static 'img/no-poster-2.png' %}" alt="">
+                {% endif %}
+              </div>
+            </div>
+            <p class="black-movie-title">{{ movie.title }}</p>
+            <p class="black-movie-content">{{ movie.release_date }}</p>
+            <p class="black-movie-avg">평균<img class="star-size" src="{% static 'img/rating-star.svg' %}" alt="">{{ movie.vote_average|mul:0.5|floatformat:1 }}</p>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const forms = document.querySelectorAll('.like-forms');
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  forms.forEach((form) => {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const collectionId = event.target.dataset.collectionId;
+      
+      
+      axios({
+        method: "POST",
+        url: `/movies/collections/${collectionId}/like/`,
+        headers: {'X-CSRFToken': csrftoken},
+      })
+        .then((response) => {
+          const likeIcon = document.querySelector(`#like-${collectionId}`);
+          const likeCount = document.querySelector(`#like_users_count`)
+          const isLiked = response.data.is_liked;
+          
+          if (isLiked === true) {
+            likeIcon.classList.remove('bi', 'bi-suit-heart');
+            likeIcon.classList.add('bi', 'bi-suit-heart-fill');
+            
+          } else {
+            likeIcon.classList.remove('bi-suit-heart-fill');
+            likeIcon.classList.add('bi', 'bi-suit-heart');
+            
+          }
+          likeCount.innerText = response.data.like_users_count;
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    });
+  });
+</script>
+
+
+
+{% endblock content %}

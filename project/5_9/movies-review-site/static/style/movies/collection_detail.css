@@ -1,0 +1,126 @@
+.collection-profile-img {
+  width: 3rem;
+}
+
+.collection-movie-poster {
+  width: 11rem;
+  height: 16rem;
+  border-radius: 5px;
+  border: 1px solid #0000000f;
+}
+
+.collection-poster-wrapper {
+  width: 11rem;
+  height: 16rem;
+  border-radius: 5px
+}
+
+.bg-collection-poster-size {
+  margin-top: 58px;
+  width: 384px;
+  height: 512px;
+  box-shadow: rgba(0, 0, 0, 0.65) 0px 0px 8px 4px;
+}
+
+
+.collcetion-bg-carousel {
+  z-index: -10;
+  height: 570px;
+  position: relative; /* position 속성 추가 */
+  background-color: black;
+}
+
+.collcetion-bg-carousel::before {
+  content: "";
+  position: absolute; /* position 속성 추가 */
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 570px; /* 변경된 부분 */
+  background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 5%, rgba(255,255,255,0) 85%, rgba(0,0,0,1) 90%, rgba(0,0,0,1) 100%);
+}
+
+.collection-banner {
+  overflow: hidden;
+}
+
+.c-wrapper {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.c-detail {
+  padding: 2rem 2rem 2rem 2rem;
+  background-color: white;
+  border: 1px solid #e3e3e3;
+  border-radius: 7px;
+}
+.collection-like {
+  color: red;
+}
+
+.collection-movie-count {
+  font-size: 16px;
+  font-weight: 400;
+  color: #555765;
+}
+
+.stack-1 {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+  z-index: -1;
+}
+.stack-2 {
+  position: absolute;
+  top: 0px;
+  left: calc(300px * 1);
+
+  z-index: -2;
+}
+.stack-3 {
+  position: absolute;
+  top: 0px;
+  left: calc(300px * 2);
+  z-index: -3;
+
+}
+.stack-4 {
+  position: absolute;
+  top: 0px;
+  left: calc(300px * 3);
+
+  z-index: -4;
+}
+.stack-5 {
+  position: absolute;
+  top: 0px;
+  left: calc(300px * 4);
+
+  z-index: -5;
+}
+
+.stack-6 {
+  position: absolute;
+  top: 0px;
+  left: calc(300px * 5);
+
+  z-index: -6;
+}
+
+.stack-7 {
+  position: absolute;
+  top: 0px;
+  left: calc(300px * 6);
+
+  z-index: -7;
+}
+
+.c-main-title {
+  margin-top: 15px;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}

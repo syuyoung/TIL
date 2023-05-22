@@ -1,0 +1,59 @@
+.account-signup-form {
+  width: 20rem;
+  padding-top: 29rem;
+  z-index: 1;
+  position: relative;
+}
+
+.account-login-form {
+  width: 20rem;
+  padding-top: 33rem;
+  z-index: 1;
+  position: relative;
+}
+.account-update-form {
+  width: 20rem;
+  padding-top: 22rem;
+  z-index: 1;
+  position: relative;
+}
+#id_password {
+  color: #D1D1D2;
+}
+
+.account-field {
+  background-color: rgb(245, 245, 245);
+  border: 0;
+}
+
+.account-field::placeholder {
+  color: #a0a0a0;
+}
+
+.username {
+  text-decoration: none;
+}
+
+.a-underline {
+  text-decoration: none;
+}
+
+.account-text-color {
+  color: #D1D1D2;
+}
+.account-text-color:hover {
+  color: #D1D1D2;
+}
+
+.account-info {
+  position: relative;
+  width: 20rem;
+  z-index: 1;
+}
+
+.color-text {
+  color: #D1D1D2;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+}

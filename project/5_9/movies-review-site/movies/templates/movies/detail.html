@@ -1,0 +1,534 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load mathfilters %}
+
+{% block content %}
+<div class="bg-poster">
+  {% if movie.backdrop_path %}
+    <img class="bg-poster-size" src="https://image.tmdb.org/t/p/w1280{{ movie.backdrop_path }}" alt="">
+  {% else %}
+    <div class="bg-poster-size bg-black"></div>
+  {% endif %}
+  <div class="bg-title-color">
+    <p>{{ movie.title }}</p>
+    <p class="bg-title-origin">{{ movie.original_title }}</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="container-py">
+    <div class="d-flex align-items-center gap-3 flex-nowrap">
+      <!---->
+      {% if movie.poster_path %}
+        <img class="poster" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="">
+      {% else %}
+        <img class="poster" src="{% static 'img/no-poster-2.png' %}" alt="">
+      {% endif %}
+      <div class="movie-overview">
+        <!--제목, 개봉일, 장르, 국가-->
+          <div class="d-flex justify-content-between align-items-center mt-5">
+            <div class='text-body-secondary fs-5'>
+              <span>{{ year}}</span>
+              <span> ・ {{ genres }}</span>
+              <span>{% if country %} ・ {{ country }}{% endif %}</span>
+            </div>
+            <div>
+              {% for keyword in kr_keywords %}
+                <span class="me-3 keyword-{{ forloop.counter }}">
+                  #{{ keyword }}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+          <hr>
+          <!--상호작용-->
+          <div class="d-flex align-items-center gap-5 flex-nowrap">
+            <!--평가하기-->
+            <div class="ms-5">
+              {% if reviews.count == 0 %}
+              <p class="text-center mb-2">평균 <img src="{% static 'img/rating-star.svg' %}" alt="">  - ({{ total_reviews }}명)</p>
+              {% else %}
+              <p class="text-center mb-2">평균 <img src="{% static 'img/rating-star.svg' %}" alt="">{{ avg_rating }} ({{ total_reviews }}명)</p>
+              {% endif %}
+              <div id="rating-print" class='star-box comment-starbox'>
+                {% if reviews.count == 0 %}
+                <p class="no-rating text-secondary">작성된 리뷰가 없습니다.</p>
+                {% else %}
+                <div class='star-gray'>
+                  <img class='w-100' src="{% static 'img/star-fill-gray.png' %}" alt="graystar">
+                </div>
+                <div class='star-star comment-star-star' style="width: {{ avg_rating_percent }}%">
+                  <img src="{% static 'img/star-fill.png' %}" alt="star">
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="ms-4 d-flex fs-5 gap-5">
+              <form action="{% url 'movies:like' movie.id %}" class="ms-2" method="POST" id="movie-like-form" data-movie-id="{{ movie.id }}">
+                {% csrf_token %}
+                {% if request.user.is_authenticated %}
+                <button type="submit" class="border-0 bg-transparent {% if is_like_movie %}pink-color{% endif %}" id="movie-like-input">
+                  {% if is_like_movie %}
+                    <i class="bi bi-check2 pink-color" id="is-like"></i>
+                  {% else %}
+                    <i class="bi bi-plus-lg pink-color" id="is-not-like"></i>
+                  {% endif %}
+                  보고싶어요
+                </button>
+                {% else %}
+                <button class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#please-login"><i class="bi bi-plus-lg pink-color"></i>보고 싶어요</button>
+                {% endif %}
+              </form>
+              <div>
+                <button class="border-0 bg-transparent" data-bs-toggle="modal" {% if request.user.is_authenticated %} data-bs-target="#review-create" {% else %} data-bs-target="#please-login" {% endif %}>
+                  <i class="bi bi-pen-fill"></i>
+                  코멘트
+                </button>
+              </div>
+                <div class="dropdown">
+                  <button class="dropdown-toggle border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    내 컬렉션
+                  </button>
+                  <ul class="dropdown-menu add-collection">
+                    {% if my_collection %}
+                      {% for collection in my_collection %}
+                        <li class="d-flex justify-content-between my-3 px-2 align-items-center">
+                          {% if request.user.is_authenticated %}
+                            <a class="dropdown-item text-truncate" href="{% url 'movies:collection_detail' request.user.username collection.pk %}">{{ collection.title }}</a>
+                          {% endif %}
+                          {% if collection.movie_cnt > 0 %}
+                            <button class="text-pink border-0 bg-transparent me-2" disabled>
+                              <i class="bi bi-check2-circle"></i>
+                            </button>
+                          {% else %}
+                            <form action="{% url 'movies:add_collection_movie' collection.pk movie.id %}" method="POST">
+                              {% csrf_token %}
+                              <button type="submit" class="text-pink add-collection-btn border-0 bg-transparent">추가</button>
+                            </form>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    {% else %}
+                      <li class="text-center my-3">컬렉션이 없어요!</li>
+                    {% endif %}
+                    <div class="text-center">
+                      {% if request.user.is_authenticated %}
+                      <a href="{% url 'movies:create' request.user.username %}" class="my-btn">컬렉션 만들기</a>
+                      {% else %}
+                      <a data-bs-toggle="modal" data-bs-target="#please-login" class="my-btn">컬렉션 만들기</a>
+                      {% endif %}
+                    </div>
+                  </ul>
+                </div>
+              
+            </div>
+          </div>
+          <hr>
+          <div class="overview-section">
+            <p id="movie-overview" class="text-overview close">{{ movie.overview }}</p>
+            <button class="text-overview border-0 bg-transparent pink-color" id="more" style="float: right;">더보기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mb-5 mt-3">
+    {% if video_key %}
+    <iframe width="720" height="405" src="https://www.youtube.com/embed/{{ video_key }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    {% endif %}
+  </div>
+</div>
+
+<section class="detail-bg-color">
+  <div class="container pt-5 pb-5">
+    <div class="container-py">
+      <div class="movie-detail">
+        <!--영화정보-->
+        <div class="mb-5">
+          <hr>
+          <p class="detail-title mb-3">영화 정보</p>
+          <div class="info-content">
+            <p class="mb-2">{{ movie.original_title }}</p>
+            <span>{{ movie.release_date }}</span>
+            <span>{% if country %} · {{ country }}{% endif %}</span>
+            <span> · {{ genres }}</span>
+            <p class="mt-2">{{ movie.runtime }}분</p>
+          </div>
+        </div>
+        <hr>
+        <p class="detail-title mb-3">출연 / 제작</p>
+        <div class="row row-cols-1 row-cols-md-4 gx-4 mx-auto">
+          <!--감독-->
+          {% for crew in crews %}
+            <a class="staff-section" href="{% url 'movies:person_detail' crew.id %}">
+              <div class="card crew-card mb-3 p-2 border-0" style="max-width: 15rem;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    {% if crew.profile_path %}
+                      <img src="https://image.tmdb.org/t/p/w185{{ crew.profile_path }}" class="img-fluid rounded" alt="...">
+                    {% else %}
+                      <img class="no-person img-fluid rounded" src="{% static 'img/person-default-2.webp' %}" alt="">
+                    {% endif %}
+                  </div>
+                  <div class="col-md-8">
+                    <div class="ms-2 d-flex flex-column justify-content-center h-100 gap-3">
+                      <p class="name-text">{% if crew.kor_name %} {{ crew.kor_name }} {% else %} {{ crew.name }} {% endif %}</p>
+                      <p class="role-text">감독</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+          
+          <!--배우-->
+          {% for cast in casts %}
+            <a class="staff-section" href="{% url 'movies:person_detail' cast.id %}">
+              <div class="card cast-card mb-3 p-2 border-0" style="max-width: 15rem;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    {% if cast.profile_path %}
+                    <img src="https://image.tmdb.org/t/p/w500{{ cast.profile_path }}" class="img-fluid rounded" alt="...">
+                    {% else %}
+                      <img class="no-person rounded img-fluid" src="{% static 'img/person-default-2.webp' %}" alt="">
+                    {% endif %}
+                  </div>
+                  <div class="col-md-8">
+                    <div class="ms-2 d-flex flex-column justify-content-center h-100 gap-3">
+                      <p class="name-text">{% if cast.kor_name %} {{ cast.kor_name }} {% else %} {{ cast.name }} {% endif %}</p>
+                      <p class="role-text">{{ cast.character }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+        <!--평점-->
+        <hr>  
+        <div>
+          <div class="d-flex justify-content-between align-items-center flex-nowrap">
+            <p class="fw-bold fs-5">별점 그래프</p>
+            
+            <p class="">평균<img class="star-size" src="{% static 'img/rating-star.svg' %}" alt="">{% if reviews.count == 0 %}- {% else %}{{ avg_rating }}{% endif %}</p>
+          </div>
+          <p class="rating-people text-secondary">({{ total_reviews }}명)</p>
+          {% if reviews.count == 0 %}
+          <div class="text-center fs-1 mb-4">
+            <i class="bi bi-bar-chart-fill"></i>
+          </div>
+          {% else %}
+          <div id="chart" class="d-flex justify-content-center gap-1" data-ratings="{{ ratings }}">
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p>0</p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p></p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p>1</p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p></p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p>2</p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p></p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p>3</p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p></p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p>4</p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p></p>
+            </div>
+            <div>
+              <div class="bar">
+                <span class="tooltip-chart-text"></span>
+              </div>
+              <p>5</p>
+            </div>
+          </div>
+          {% endif %}
+          <hr>
+        </div>
+      <!-- 리뷰 캐러셀 -->
+      <div class="mb-3">
+        <span class="fs-5 fw-bold">리뷰</span> <span class="text-secondary">{{ reviews.count }}</span>
+      </div>
+      {% if reviews.count == 0 %}
+      <div class="text-center">
+        <div class="fs-1 mb-2">
+          <i class="bi bi-pen-fill"></i>
+        </div>
+        <p>작성된 리뷰가 없습니다.</p>
+        <p class="text-secondary mt-2">처음으로 작품에 대한 감상을 공유해보는 건 어떨까요?</p>
+      </div>
+      {% else %}
+      <div class="review-box">
+        <div class="review-slide">
+          <!-- Slides -->
+          {% for review, liked_by_user, disliked_by_user in review_info_lst %}
+            <div class="card mx-2 p-2 review-card" style="width: 18rem;">
+              <!-- 카드 헤더 (프사, 닉네임, 별점) -->
+              <div class="card-header review-card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center profile-href" OnClick="location.href ='{% url 'accounts:profile' review.user %}'" style="cursor:pointer;">
+                  <img class="review-card-profile-img me-1 rounded-circle" {% if review.user.profile_image %} src="{{ review.user.profile_image.url }}" {% else %} src="{% static 'img/profile-img.png' %}" {% endif %}  alt="review-profile-image">
+                  <p class="card-text">{{ review.user.nickname }}</p>
+                </div>
+                <p class="card-text d-flex gap-1"><img src="{% static 'img/rating-star.svg' %}" alt="">{{ review.rating }}</p>
+              </div>
+              <!-- 카드바디 (리뷰내용) -->
+              
+
+              <div class="card-body review-card-body">
+                <!-- 스포일러 True False 조건문 -->
+                {% if review.is_spoiler %}
+                  <p class="spoiler-guide">스포일러가 있어요!!<span class="spoiler-check" data-spoiler="{{ review.is_spoiler }}" data-isLiked="{{liked_by_user}}" data-isDisliked="{{disliked_by_user}}" > 보기</span></p>
+                  <p class="card-text review-content review-content-overflow content-href hide-spoiler-content" OnClick="location.href ='{% url 'reviews:detail' review.movie review.pk %}'">{{review.content|linebreaksbr}}</p>
+                {% else %}
+                  <p class="card-text review-content review-content-overflow content-href"  OnClick="location.href ='{% url 'reviews:detail' review.movie review.pk %}'">{{review.content|linebreaksbr}}</p>
+                {% endif %}
+              </div>
+
+              <!-- 카드푸터 (좋아요, 싫어요, 댓글) -->
+              <div class="card-footer d-flex justify-content-between align-items-center
+              {% if review.is_spoiler %}
+                spoiler-review-card-footer
+              {% else %}
+                review-card-footer 
+              {% endif %}
+              ">
+                <div class="d-flex">
+
+                  <form class="like-reviews-forms" data-review-id="{{ review.pk }}">
+                    {% csrf_token %}
+                    {% if review.is_spoiler == True %}
+                    <button type="submit" id="like-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent spoiler-like-btn" disabled>
+                    {% elif liked_by_user %}  
+                      <button type="submit" id="like-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-like-btn review-emote-btn rounded is-liked-btn">
+                    {% else %}
+                      <button type="submit" id="like-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-like-btn review-emote-btn rounded">
+                    {% endif %}
+                      <label class="{% if review.is_spoiler %} spoiler-thumbs-up-icon {% else %} thumbs-up-icon {% endif %}">
+                        {% if liked_by_user %}
+                          <i class="bi bi-hand-thumbs-up-fill" id="like-reviews-icon-{{ review.pk }}"></i>
+                        {% else %}
+                          <i class="bi bi-hand-thumbs-up" id="like-reviews-icon-{{ review.pk }}"></i>
+                        {% endif %}
+                    </label>
+                    <span id="like-reviews-cnt-{{ review.pk }}">{{ review.num_likes }}</span>
+                    </button>
+                  </form>
+                  
+
+                  <form class="dislike-reviews-forms" data-review-id="{{ review.pk }}">
+                    {% csrf_token %}
+                    {% if review.is_spoiler %}
+                      <button type="submit" id="dislike-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent spoiler-dislike-btn" disabled>
+                    {% elif disliked_by_user %}
+                      <button type="submit" id="dislike-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-dislike-btn review-emote-btn rounded is-disliked-btn">
+                    {% else %}
+                      <button type="submit" id="dislike-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-dislike-btn review-emote-btn rounded">
+                    {% endif %}  
+                      <label class="{% if review.is_spoiler %} spoiler-thumbs-down-icon {% else %} thumbs-down-icon {% endif %}">
+                        {% if disliked_by_user %}
+                          <i class="bi bi-hand-thumbs-down-fill" id="dislike-reviews-icon-{{ review.pk }}"></i>
+                        {% else %}
+                          <i class="bi bi-hand-thumbs-down" id="dislike-reviews-icon-{{ review.pk }}"></i>
+                        {% endif %}
+                      </label>
+                      <span id="dislike-reviews-cnt-{{ review.pk }}">{{ review.num_dislikes }}</span>
+                    </button>
+                  </form>
+
+                </div>
+                <div>
+                  <span class="card-text"><label class="chat-label"><i class="bi bi-chat-fill"></i></label></span>
+                  <span>{{ review.reviewcomment_set.all|length }}</span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <hr>
+        <span class="fs-5 fw-bold">컬렉션</span> <span class="text-secondary">{{ collections.count }}</span>
+      <div>
+        <div class="collection-list mt-3">
+          {% for movie_collection in movie_collections %}
+            <li class="collection-item">
+              <a href="{% url 'movies:collection_detail' movie_collection.collection.user movie_collection.collection.pk %}">
+                <div class="detail-collection">
+                  <div class="detail-collection-poster-wrapper">
+                    {% for movie in movie_collection.collection.moviecollection_set.all|slice:"4" %}
+                      <img class="profile-collection-poster" src="https://image.tmdb.org/t/p/w500/{{ movie.movie_poster }}" alt="">
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+              <p class="text-center mt-1">{{ movie_collection.collection.title }}</p>
+            </li>
+          {% endfor %}
+        </div>
+      </div>
+      <hr>
+      <!--비슷한 작품-->
+      <div>
+        <p class="fs-5 fw-bold">비슷한 작품</p>
+          <div class="r-card-wrap">
+          {% for r_movie in recommend %}
+          <a class="r-card" href="{% url 'movies:detail' r_movie.id %}">
+            {% if r_movie.poster_path %}
+            <img class="r-poster-size" src="https://image.tmdb.org/t/p/w342{{ r_movie.poster_path }}" alt="">
+            {% else %}
+            <img class="r-poster-size" src="{% static 'img/no-poster-2.png' %}" alt="">
+            {% endif %}
+            <span class="r-movie-title">{{ r_movie.title }}</span>
+            <p class="r-movie-content">{{ movie.release_date|slice:":4" }}</p>
+            <p class="r-movie-avg">평점<img class="star-size" src="{% static 'img/rating-star.svg' %}" alt="">{{ r_movie.vote_average|mul:0.5|floatformat:1 }}</p>
+          </a>
+          {% endfor %}
+        </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- 리뷰 작성 모달 -->
+<div class="modal fade" id="review-create" tabindex="-1" aria-labelledby="review-createLabel" aria-hidden="true">
+  <div class="modal-dialog login-modal">
+    <div class="modal-content">
+      <div class="modal-header pb-0">
+        <h1 class="modal-title fs-5" id="review-createLabel">{{ movie.title }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'reviews:review_create' %}" method="POST">
+        <div class="modal-body">
+          {% csrf_token %}
+          <div class="star-container">
+            <div class="star-empty">
+              <svg width="44" height="44" viewbox="0 0 44 44" fill="#eee" class="empty-star clickable-star" id="star-1">
+                <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+              </svg>
+              <svg width="44" height="44" viewbox="0 0 44 44" fill="#eee" class="empty-star clickable-star" id="star-2">
+                <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+              </svg>
+              <svg width="44" height="44" viewbox="0 0 44 44" fill="#eee" class="empty-star clickable-star" id="star-3">
+                <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+              </svg>
+              <svg width="44" height="44" viewbox="0 0 44 44" fill="#eee" class="empty-star clickable-star" id="star-4">
+                <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+              </svg>
+              <svg width="44" height="44" viewbox="0 0 44 44" fill="#eee" class="empty-star clickable-star" id="star-5">
+                <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+              </svg>
+  
+              <div class="fill-star-width" id="star-full">
+                <svg width="44" height="44" viewbox="0 0 44 44" fill="#ffdd63" class="fill-star clickable-star" id="star-1">
+                  <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+                </svg>
+                <svg width="44" height="44" viewbox="0 0 44 44" fill="#ffdd63" class="fill-star clickable-star" id="star-2">
+                  <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+                </svg>
+                <svg width="44" height="44" viewbox="0 0 44 44" fill="#ffdd63" class="fill-star clickable-star" id="star-3">
+                  <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+                </svg>
+                <svg width="44" height="44" viewbox="0 0 44 44" fill="#ffdd63" class="fill-star clickable-star" id="star-4">
+                  <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+                </svg>
+                <svg width="44" height="44" viewbox="0 0 44 44" fill="#ffdd63" class="fill-star clickable-star" id="star-5">
+                  <path d="M22 33.444L9.83 42.327c-.784.572-1.842-.196-1.539-1.118l4.687-14.32L.769 18.06c-.787-.569-.383-1.812.588-1.81l15.067.033 4.624-14.34c.298-.924 1.606-.924 1.904 0l4.624 14.34 15.067-.033c.971-.002 1.375 1.241.588 1.81l-12.209 8.829 4.688 14.32c.302.922-.756 1.69-1.54 1.118L22 33.444z"></path>
+                </svg>
+              </div>
+            </div>
+            <input type="number" hidden name="rating" value="0.0" id="rating">
+          </div>
+          <div class="mt-3">
+            {{ review_form.as_p }}
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <label class="spoiler-label fs-3" id="spoiler-label" for="spoiler"><i class="bi bi-emoji-angry tooltip-spoiler"><span class="tooltiptext">스포일러가 있는 코멘트를 가려보세요.</span></i></label>
+            <input type="number" hidden name="is_spoiler" id="spoiler-field" value=0>
+            <button id="review-btn" type="submit" class="review-btn" disabled>작성</button>
+          </div>
+          <input type="text" hidden name="title" value="{{ movie.title }}">
+          <input type="number" hidden name="movie-id" value="{{ movie.id }}">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--로그인 안내 모달-->
+<div class="modal fade" id="please-login" tabindex="-1" aria-labelledby="review-createLabel" aria-hidden="true">
+  <div class="modal-dialog login-modal">
+    <div class="modal-content">
+      <div class="modal-header pb-0">
+        <button type="button" class="btn-close text-pink ms-0" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="please-login-content">
+          <div class="chat-icon mb-3">
+            <i class="bi bi-chat-fill"></i>
+          </div>
+          <p class="fw-bold fs-5 lh-base">지금 회원가입 혹은 로그인하시고, <p class="fw-bold fs-5 lh-base">영화에 빠져보세요!</p> </p>
+        </div>
+        <div class="d-grid mb-5">
+          <a class="my-btn mb-3" href="{% url 'accounts:signup' %}">회원가입</a>
+          <a class="text-pink a-underline" href="{% url 'accounts:login' %}">로그인</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js" integrity="sha512-WNZwVebQjhSxEzwbettGuQgWxbpYdoLf7mH+25A7sfQbbxKeS5SQ9QBf97zOY4nOlwtksgDA/czSTmfj4DUEiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/reviews/index.js' %}"></script>
+<script src="{% static 'js/reviews/create.js' %}"></script>
+<script src="{% static 'js/movies/more.js' %}"></script>
+<script src="{% static 'js/movies/rating-chart.js' %}"></script>
+<script src="{% static 'js/movies/spoiler.js' %}"></script>
+<script src="{% static 'js/movies/movie_like.js' %}"></script>
+{% endblock content %}

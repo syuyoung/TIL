@@ -1,0 +1,35 @@
+.filter {
+  text-decoration: none;
+}
+
+.active > .page-link {
+  background-color: #ff0558;
+  border-color: #ff0558;
+}
+
+.page-link {
+  color: #ff2f6e;
+  background-color: #454550;
+  border: var(--bs-pagination-border-width) solid black;
+}
+
+.result-filter {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  padding-right: 7px;
+}
+.result-filter-inner{
+  width: 85px;
+  margin-bottom: 10px;
+}
+
+.gnere-select-form {
+  background-color: #1C1D1F;
+  color: rgb(240, 240, 240);
+  border: none;
+}
+
+.gnere-select-form > option:hover {
+  background-color: #3b4869 !important;
+}

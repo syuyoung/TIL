@@ -1,0 +1,80 @@
+.review-card {
+  border: 0;
+}
+
+.review-card, .review-card-header, .review-card-footer, .spoiler-review-card-footer {
+  background-color: rgb(242, 242, 242);
+}
+
+.review-card-body {
+  height: 150px;
+  font-size: 16px;
+}
+
+.review-card-header, .review-card-footer, .spoiler-review-card-footer {
+  height: 50px;
+}
+
+.review-card-footer {
+  color: rgb(120, 120, 120);
+}
+
+.spoiler-review-card-footer {
+  color: rgb(200, 200, 200);
+}
+
+.slick-list {
+  width:100%;
+  position:relative;
+}
+
+.slick-slide {
+  margin: 0 10px; 
+}
+.slick-list {
+  margin: 0 -10px;
+}
+
+.review-card-profile-img {
+  width: 30px;
+  height: 30px;
+}
+
+.review-content-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+.tooltip-spoiler, .profile-href, .content-href, .thumbs-up-icon, .thumbs-down-icon{
+  cursor:pointer;
+}
+
+.slick-prev:before, .slick-next:before {
+  color: black
+}
+
+.spoiler-check {
+  color: #ff0558;
+  cursor:pointer;
+}
+
+.hide-spoiler-content {
+  display:none;
+}
+
+.review-emote-btn {
+  padding: 0 7px 0 7px;
+  height: 22px;
+  border: none;
+  color: #67686a;
+  font-size: 1rem;
+  border: 1px;
+}
+
+.review-emote-btn:hover {
+  z-index: 10;
+  background-color: white;
+}

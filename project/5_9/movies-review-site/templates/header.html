@@ -1,0 +1,96 @@
+{% load static %}
+
+<nav class="position-absolute fixed-top navbar navbar-expand-lg w-100 dark-header-color">
+  <div class="d-flex container">
+    <a class="navbar-brand fs-4" href="{% url 'movies:index' %}"><span class="pink-color">SEE</span>NEMA</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+        <li class="nav-item">
+          <a type="button" class="nav-link active" data-bs-toggle="modal" data-bs-target="#genreSearch">
+            장르
+          </a>
+          {% comment %} <a class="nav-link active" aria-current="page" href="{% url 'movies:genre_movies' 'Action' %}">장르</a> {% endcomment %}
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'movies:genre_movies' '액션' %}">액션</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'movies:genre_movies' 'SF' %}">SF</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'movies:genre_movies' '음악' %}">음악</a>
+        </li>
+      </ul>
+      <div class="search-box">
+        <form action="{% url 'movies:search' %}" class="d-flex" role="search">
+          <div id="search" class="d-flex align-items-center dark-search rounded-1 ps-3">
+            <i class="bi bi-search"></i>
+            <input class="px-1 py-2 bg-transparent border-0 rounded-1 dark-search movie-search" type="search" name="search" placeholder="검색" aria-label="Search">
+          </div>
+          <button class="" type="submit" hidden>Search</button>
+        </form>
+
+        <!-- 검색어 추천 (일간 인기영화 ) -->
+        <div class="trending-box is-onblur" tabindex="0">
+          <form action="{% url 'movies:search' %}" role="search" class="">
+          <span class="popular-search pink-text">인기 검색어</span>
+          <div class="d-flex flex-column mt-2">
+            {% for dtm in day_trending_movies %}
+              <div class="trending-movies">
+                <input type="submit" name="search" value="{{ dtm }}">
+              </div>
+            {% endfor %}
+          </div>
+        </form>
+        </div>
+      </div>
+      <!-- 로그인 / 회원가입 -->
+      <div class="d-flex align-items-center">
+        <!--로그인 시-->
+        {% if request.user.is_authenticated %}
+        <a class="ms-3 username fs-5 me-3" href="{% url 'accounts:profile' request.user.username %}">
+          {% if request.user.profile_image %}
+            <img class="header-profile-img rounded-circle" src="{{ request.user.profile_image.url }}" alt="">
+          {% else %}
+            <img src="{% static 'img/profile-img.png' %}" alt="" class="header-profile-img">
+          {% endif %}
+        </a>
+        <form action="{% url 'accounts:logout' %}" method="POST">
+          {% csrf_token %}
+          <input id="logout" class="dark-logout py-2" type="submit" value="로그아웃">
+        </form>
+        <!--비 로그인 시-->
+        {% else %}
+        <a class="dark-signup-color border-0 bg-transparent header-color" href="{% url 'accounts:login' %}">로그인</a>
+        <a class="dark-signup-color py-2" href="{% url 'accounts:signup' %}">회원가입</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<div class="modal fade" id="genreSearch" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog search-modal">
+    <div class="modal-content search-modal-bg">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">장르 검색</h1>
+        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-2">
+          {% for genre in genre_dict_modal %}
+            <div class="col-md-3">
+              <a class="my-genre-btn w-100" href="{% url 'movies:genre_movies' genre %}">{{ genre }}</a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/base/trending.js' %}"></script>

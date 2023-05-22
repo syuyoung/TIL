@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load mathfilters %}
+
+{% block content %}
+<div class="page-bg-wrapper">
+  <div class="page-bg-inner">
+    <div class="container container-pt pb-5">
+      <!--내용-->
+      <div class="container container-pt profile">
+        <div class="rounded-3 mt-3">
+          <!--상단 배너-->
+          <div class="rounded-top banner profile-bg-pattern" style="background-color: {{ person.color }};">
+            <div class="dropdown">
+              {% if request.user.is_authenticated and request.user == person %}
+              <button class="border-0 bg-transparent profile-update-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-gear-fill"></i>
+              </button>
+              {% endif %}
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'accounts:update' %}">프로필 수정</a></li>
+                <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}">비밀번호 수정</a></li>
+                <li>
+                  <form action="{% url 'accounts:delete' %}" method="POST">
+                    {% csrf_token %}
+                    <button class="dropdown-item" onclick="return confirm('탈퇴하시겠습니까?')" type="submit">탈퇴하기</button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!--하단 영역-->
+          <div class="profile-content pb-3 z-3 profile-bg rounded-bottom position-relative">
+            <!--프로필 이미지, 유저이름-->
+            <div class="profile-info d-flex align-items-end">
+              <div class="profile-img text-center">
+                {% if person.profile_image %}
+                  <img class="profile-img rounded-circle" src="{{ person.profile_image.url }}" alt="">
+                {% else %}
+                  <img class="profile-img" src="{% static 'img/profile-img.png' %}" alt="">
+                {% endif %}
+              </div>
+            </div>
+            <!--평가, 보고싶어요, 보는중-->
+            <div class="d-flex justify-content-between align-items-center movie-section mb-5">
+              <p class="fs-5 fw-bold">{{ person.nickname }}</p>
+              <div class="text-center">
+                <form class="mb-3" id="follow-form" data-username="{{ request.user.username }}" data-myname="{{ request.user.nickname }}" data-userpk="{{ person.pk }}" {% if request.user.profile_image %} data-image="{{ request.user.profile_image.url }}" {% else %} data-image="{% static 'img/profile-img.png' %}" {% endif %} >
+                  {% csrf_token %}
+                    {% if request.user != person %}
+                      {% if request.user in person.followers.all %}
+                        <button class="border-0 bg-transparent fs-2" type="submit">
+                          <i class="bi bi-person-dash"></i>
+                        </button>
+                      {% else %}
+                        {% if request.user.is_authenticated %}
+                          <button class="border-0 bg-transparent fs-2" type="submit">
+                            <i class="bi bi-person-plus"></i>
+                          </button>
+                        {% else %}
+                          <button class="border-0 bg-transparent fs-2" disabled>
+                            <i class="bi bi-person"></i>
+                          </button>
+                        {% endif %}
+                      {% endif %}
+                    {% else %}
+                  {% endif %}
+                </form>
+                <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#followers" aria-controls="offcanvasExample">
+                  팔로워 <span id="followers-count">{{ person.followers.all|length }}</span>
+                </button>
+                <button class="border-0 bg-transparent" type="button" data-bs-toggle="offcanvas" data-bs-target="#followings" aria-controls="offcanvasExample">
+                  팔로잉 <span id="followings-count">{{ person.followings.all|length }}</span>
+                </button>
+              </div>
+            </div>
+            <p class="section mb-3">평가</p>
+            <hr>
+            <!--리뷰 박스 공간-->
+            <div class="review-box">
+              <div class="profile-review-slide">
+                <!-- Slides -->
+                {% for review, liked_by_user, disliked_by_user in review_info_lst %}
+                  <div class="card mx-2 p-2 review-card mb-3" style="width: 18rem;">
+                    <!-- 카드 헤더 (프사, 닉네임, 별점) -->
+                    <div class="card-header review-card-header d-flex align-items-center justify-content-between">
+                      <p class="card-text profile-review-title">{{ review.title }}</p>
+                      <p class="card-text d-flex align-items-center gap-1"><img class="star-size" src="{% static 'img/rating-star.svg' %}" alt="">{{ review.rating }}</p>
+                    </div>
+                    <!-- 카드바디 (리뷰내용) -->
+      
+                    <div class="card-body review-card-body">
+                      <!-- 스포일러 True False 조건문 -->
+                      {% if review.is_spoiler %}
+                        <p class="spoiler-guide">스포일러가 있어요!!<span class="spoiler-check" data-spoiler="{{ review.is_spoiler }}" data-isLiked="{{liked_by_user}}" data-isDisliked="{{disliked_by_user}}" > 보기</span></p>
+                        <p class="card-text review-content review-content-overflow content-href hide-spoiler-content" OnClick="location.href ='{% url 'reviews:detail' review.movie review.pk %}'">{{review.content|linebreaksbr}}</p>
+                      {% else %}
+                        <p class="card-text review-content review-content-overflow content-href"  OnClick="location.href ='{% url 'reviews:detail' review.movie review.pk %}'">{{review.content|linebreaksbr}}</p>
+                      {% endif %}
+                    </div>
+      
+                    <!-- 카드푸터 (좋아요, 싫어요, 댓글) -->
+                    <div class="card-footer d-flex justify-content-between align-items-center
+                    {% if review.is_spoiler %}
+                      spoiler-review-card-footer
+                    {% else %}
+                      review-card-footer 
+                    {% endif %}
+                    ">
+                      <div class="d-flex">
+      
+                        <form class="like-reviews-forms" data-review-id="{{ review.pk }}">
+                          {% csrf_token %}
+                          {% if review.is_spoiler == True %}
+                          <button type="submit" id="like-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent spoiler-like-btn" disabled>
+                          {% elif liked_by_user %}  
+                            <button type="submit" id="like-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-like-btn review-emote-btn rounded is-liked-btn">
+                          {% else %}
+                            <button type="submit" id="like-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-like-btn review-emote-btn rounded">
+                          {% endif %}
+                            <label class="{% if review.is_spoiler %} spoiler-thumbs-up-icon {% else %} thumbs-up-icon {% endif %}">
+                              {% if liked_by_user %}
+                                <i class="bi bi-hand-thumbs-up-fill" id="like-reviews-icon-{{ review.pk }}"></i>
+                              {% else %}
+                                <i class="bi bi-hand-thumbs-up" id="like-reviews-icon-{{ review.pk }}"></i>
+                              {% endif %}
+                          </label>
+                          <span id="like-reviews-cnt-{{ review.pk }}">{{ review.num_likes }}</span>
+                          </button>
+                        </form>
+                        
+      
+                        <form class="dislike-reviews-forms" data-review-id="{{ review.pk }}">
+                          {% csrf_token %}
+                          {% if review.is_spoiler %}
+                            <button type="submit" id="dislike-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent spoiler-dislike-btn" disabled>
+                          {% elif disliked_by_user %}
+                            <button type="submit" id="dislike-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-dislike-btn review-emote-btn rounded is-disliked-btn">
+                          {% else %}
+                            <button type="submit" id="dislike-reviews-btn-{{ review.pk }}" class="border-0 bg-transparent review-dislike-btn review-emote-btn rounded">
+                          {% endif %}  
+                            <label class="{% if review.is_spoiler %} spoiler-thumbs-down-icon {% else %} thumbs-down-icon {% endif %}">
+                              {% if disliked_by_user %}
+                                <i class="bi bi-hand-thumbs-down-fill" id="dislike-reviews-icon-{{ review.pk }}"></i>
+                              {% else %}
+                                <i class="bi bi-hand-thumbs-down" id="dislike-reviews-icon-{{ review.pk }}"></i>
+                              {% endif %}
+                            </label>
+                            <span id="dislike-reviews-cnt-{{ review.pk }}">{{ review.num_dislikes }}</span>
+                          </button>
+                        </form>
+      
+                      </div>
+                      <div>
+                        <span class="card-text"><label class="chat-label"><i class="bi bi-chat-fill"></i></label></span>
+                        <span>{{ review.reviewcomment_set.all|length }}</span>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- 보고 싶어요 -->
+            <p class="section mb-3">보고 싶어요</p>
+            <hr>
+            <div class="collection-list mt-3">
+              {% for movie in like_movies %}
+                <li class="collection-item">
+                  <a class="text-dark" href="{% url 'movies:detail' movie.id %}">
+                    <div class="profile-like-movies-content">
+                      <div class="profile-collection-poster-wrapper">
+                        <img class="profile-like-movies" src="https://image.tmdb.org/t/p/w500/{{ movie.poster_path }}" alt="포스터">
+                        <div class="profile-collection-title text-truncate profile-like-movies-info mt-1">
+                          <p>{{ movie.title }}</p>
+                          <p>{{ movie.release_date }}</p>
+                          <p>평균<img class="star-size like-movies-star" src="{% static 'img/rating-star.svg' %}" alt="">{{ movie.vote_average|mul:0.5|floatformat:1 }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              {% endfor %}
+            </div>
+
+            <!-- 컬렉션 -->
+            <div class="d-flex justify-content-between align-items-center profile-title">
+              {% comment %} <p class="profile-collection-title">컬렉션</p> {% endcomment %}
+              <p class="section">컬렉션</p>
+              {% if request.user == person %}
+                <a class="fs-3 pink-text" href="{% url 'movies:create' person.username %}"><i class="bi bi-plus-lg"></i></a>
+              {% endif %}
+            </div>
+            <div class="collection-list mt-3">
+              {% for collection in collections %}
+                <li class="collection-item">
+                  <a href="{% url 'movies:collection_detail' person.username collection.pk %}">
+                    <div class="profile-collection">
+                      <div class="profile-collection-poster-wrapper">
+                        {% for movie in collection.moviecollection_set.all|slice:"4" %}
+                          <img class="profile-collection-poster" src="https://image.tmdb.org/t/p/w500/{{ movie.movie_poster }}" alt="">
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </a>
+                  <p class="text-center mt-1 profile-collection-title">{{ collection.title }}</p>
+                </li>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--followers-->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="followers" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Followers</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="follower-list" class='d-flex m-3'>
+      {% for follower in person.followers.all %}
+      <!--기존 팔로워-->
+      <div id="{{ follower.username }}" class='m-2 w-25'>
+        <a href="{% url 'accounts:profile' follower.username %}" class="userinfo-txt">
+          <div class="userinfo_box">
+            {% if follower.profile_image %}
+              <img src="{{ follower.profile_image.url }}" alt="" class="userinfo_img">
+            {% else %}
+              <img src="{% static 'img/profile-img.png' %}" alt="profile_image_none" class="userinfo_img">
+            {% endif %}
+          </div>
+          <p class="text-center text-truncate">{{ follower.nickname }}</p>
+        </a>
+      </div>
+      <!---->
+      {% empty %}
+        <p>Follower가 없습니다.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!--followings-->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="followings" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Followings</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class='d-flex m-3'>
+      {% for following in person.followings.all %}
+      <!--기존 팔로워-->
+      <div id="{{ following.username }}" class='m-2 w-25'>
+        <a href="{% url 'accounts:profile' following.username %}" class="userinfo-txt">
+          <div class="userinfo_box">
+            {% if following.profile_image %}
+              <img src="{{ following.profile_image.url }}" alt="" class="userinfo_img">
+            {% else %}
+              <img src="{% static 'img/profile-img.png' %}" alt="profile_image_none" class="userinfo_img">
+            {% endif %}
+          </div>
+          <p class="text-center text-truncate">{{ following.nickname }}</p>
+        </a>
+      </div>
+      {% empty %}
+        <p>Following이 없습니다.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.js" integrity="sha512-WNZwVebQjhSxEzwbettGuQgWxbpYdoLf7mH+25A7sfQbbxKeS5SQ9QBf97zOY4nOlwtksgDA/czSTmfj4DUEiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/accounts/profile.js' %}"></script>
+<script src="{% static 'js/accounts/follow.js' %}"></script>
+<script src="{% static 'js/reviews/index.js' %}"></script>
+{% endblock %}

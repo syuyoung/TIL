@@ -1,0 +1,426 @@
+.bg-poster {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.bg-poster::before {
+  background-color: black;
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 35%, rgba(255,255,255,0) 45%, rgba(255,255,255,0) 78%, rgba(0,0,0,1) 88%, rgba(31,31,31,1) 100%, rgba(0,0,0,1) 100%);
+}
+
+.bg-poster-size {
+  margin-left: 35%;
+  width: 1024px;
+  height: 576px;
+}
+
+.poster {
+  top: 34rem;
+  z-index: 3;
+  position: absolute;
+  padding: 3px;
+  width: 200px;
+  height: 270px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 2px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.do-rating {
+  font-size: 14px;
+}
+
+.vertical-line {
+  width: 1px;
+  height: 100%;
+}
+
+.bg-title-color {
+  top: 27.5rem;
+  left: 20rem;
+  position: absolute;
+  color: white;
+  z-index: 2;
+  font-size: 45px;
+  }
+
+.bg-title-origin {
+  padding-top: 10px;
+  font-size: 20px;
+}
+
+.modal-header {
+  border-bottom: 0px;
+}
+
+.modal-footer {
+  border-top: 0px; 
+}
+
+.review-form {
+  outline: none;
+  resize: none;
+}
+
+.review-btn {
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: #ff0558;
+  border: 0;
+}
+
+.spoiler-label {
+  color: #ff0558;
+}
+
+.container-py {
+  margin-left: 7rem;
+  margin-right: 7rem;
+}
+
+.movie-overview {
+  padding-left: 220px;
+  margin-bottom: 35px;
+}
+
+.text-overview {
+  font-size: 15px;
+  line-height: 20px;
+  max-height: 100%;
+}
+
+.text-overview.close {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.movie-detail {
+  padding: 2rem;
+  background-color: white;
+  border: 1px solid #e3e3e3;
+  border-radius: 7px;
+}
+
+.profile-path {
+  width: 5rem;
+}
+
+.profile-wrapper {
+  border: 1px solid black;
+  text-decoration: none;
+  color: black;
+  padding: 3px;
+}
+.crew-card, .cast-card {
+  display: flex;
+  align-items: center;
+}
+
+.my-auto {
+  margin: auto;
+}
+
+.detail-title {
+  margin-top: 15px;
+  font-size: 19px;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+.role-text {
+  color: #8C8C8C;
+  font-size: 14px;
+}
+
+.info-content {
+  color: #4A4A4A;
+  font-size: 15px;
+  margin-left: 8px;
+}
+
+.staff-section {
+  text-decoration: none;
+}
+
+#chart {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  /* width: 600px; */
+  height: 100px;
+}
+
+#chart div p {
+  text-align: center;
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+.bar {
+  width: 36px;
+  background-color: #ffdd53;
+}
+
+.bar:hover {
+  background-color: #f3cc30;
+}
+
+.bar {
+  position: relative;
+  display: inline-block;
+}
+
+
+.bar .tooltip-chart-text {
+  visibility: hidden;
+  width: 60px;
+  background-color: #3b4869;
+  color: rgb(240, 240, 240);
+  text-align: center;
+  padding: 5px 0;
+  margin-bottom: 25px;
+  margin-right: 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  font-style: normal;
+}
+
+.tooltip-chart-text {
+  font-size: 16px;
+  width: 160px;
+  bottom: 80%;
+  left: -28%;
+}
+
+.bar:hover .tooltip-chart-text{
+  visibility: visible;
+}
+
+.bar .tooltip-chart-text::after {
+  content: " ";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #3b4869 transparent transparent transparent;
+}
+
+
+#chart div:nth-child(2n) {
+  margin-bottom: 12px;
+}
+
+.detail-bg-color {
+  background-color: #f8f8f8;
+  border-top: 1px solid #e3e3e3;
+}
+
+.chat-icon {
+  font-size: 4rem;
+  color: #a0a0a0;
+}
+
+.login-modal {
+  width: 375px;
+  margin-top: 17rem;
+}
+
+.please-login-content {
+  margin: 5rem 0;
+}
+
+.my-btn {
+  background-color: #ff2f6e;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 6px;
+  border: 0px;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.text-pink {
+  color: #ff2f6e;
+}
+
+.rating-people {
+  text-align: end;
+  font-size: 14px;
+}
+
+/* .stars-wrapper {
+  position: relative;
+  width: 10rem;
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+} */
+
+/*  */
+
+.star-box {
+  position: relative;
+}
+
+.comment-starbox {
+  width: 10rem;
+}
+
+.star-star {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+}
+
+.comment-star-star img {
+  width: 10rem;
+}
+
+.star-star {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+}
+
+.pen-icon {
+  size: 10rem;
+}
+
+.no-rating {
+  font-size: 14px;
+  text-align: center;
+}
+
+.no-person-wrapper {
+  width: 70px;
+  height: 105px;
+  padding-bottom: 10px;
+  background-color: #e4e6e7;
+}
+
+.no-person {
+  width: 100%;
+}
+
+.r-poster-size {
+  height: 267px;
+  width: 178px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.r-card-wrap{
+  display: flex;
+  gap: 20px 20px;
+  flex-wrap: wrap;
+  padding: 15px
+}
+.r-card {
+  display: inline-flex;
+  flex-direction: column;
+  width: 178px;
+  
+}
+
+.r-movie-title {
+  font-size: 14px;
+  margin: 3px 0px 4px;
+  line-height: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  color: black;
+  text-overflow: ellipsis
+}
+
+.r-movie-content {
+  padding-bottom: 3px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  color: black;
+  text-overflow: ellipsis
+}
+.r-movie-avg {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  display: flex;
+  color: black;
+  align-items: flex-end;
+}
+
+.detail-collection {
+  position: relative;
+  background: rgb(204, 205, 207);
+  box-sizing: border-box;
+  width: 100%;
+  padding-bottom: 145.5%;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.detail-collection-poster-wrapper {
+  display: flex;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  width: 232px;
+  height: 171px;
+  padding: 2px;
+}
+
+.add-collection {
+  width: 200px;
+}
+
+.add-collection-btn {
+  width: 50px;
+}
+
+.keyword-1 {
+  color: #00aae6;
+}
+
+.keyword-2 {
+  color: #ff8644;
+}
+
+.keyword-3 {
+  color: rgb(212 123 247);
+}
+
+.keyword-4 {
+  color: rgb(16 200 118);
+}
