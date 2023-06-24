@@ -8,7 +8,7 @@
 
 ```
 * {
-  color: red;
+  color: red; 
 }
 ```
 
@@ -225,7 +225,7 @@ E:not(S)
 
  E 요소 내부의 앞에, 내용(content)을 삽입
 
-content  속성 필수
+content 속성 필수
 
 E::before
 
@@ -233,7 +233,7 @@ E::before
 
 E 요소 내부의 뒤에, 내용(content)을 삽입
 
-content  속성 필수
+content 속성 필수
 
 E::after
 
