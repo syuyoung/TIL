@@ -22,6 +22,8 @@ CSS 혹은 JavaScript의 요소 선택기([CSS 선택자](https://developer.mozi
 
 ## lang
 
+# global attributes
+
 요소의 언어([ISO 639-1](https://ko.wikipedia.org/wiki/ISO_639-1_%EC%BD%94%EB%93%9C_%EB%AA%A9%EB%A1%9D))를 지정.
 
 ## data-\*
