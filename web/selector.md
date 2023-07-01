@@ -168,7 +168,6 @@ E ~ F
   <li>사과</li>  <!--선택-->
 </ul>
 ```
-
 ### **<가상 클래스 선택자 (Pseudo-Classes Selectors)>**
 
 #### **<hover>**
