@@ -1,0 +1,12 @@
+@mixin bg-img ($bg-url, $bg-position: center, $bg-size: contain) {
+  background-image: url($bg-url);
+  background-position: $bg-position;
+  background-size: $bg-size;    
+}
+
+.bg {
+  margin: 0 auto;
+  width: 100px;
+  height: 100px;
+  @include bg-img('https://sass-lang.com/assets/img/logos/logo-b6e1ef6e.svg');
+}
