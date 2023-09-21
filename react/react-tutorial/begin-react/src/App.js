@@ -21,16 +21,19 @@ function App() {
       id: 1,
       username: 'yuyoung',
       email: 'yuyoung.dev@gmail.com',
+      active: true,
     },
     {
       id: 2,
       username: 'taster',
       email: 'taster@gmail.com',
+      active: false,
     },
     {
       id: 3,
       username: 'liz',
       email: 'liz@gmail.com',
+      active: false,
     }
   ]);
 
@@ -40,15 +43,28 @@ function App() {
     const user = {
       id: nextId.current,
       username,
-      email,
+      email
     };
     // setUsers([...users, user]);
-    setUsers(users.concat(user))
+    setUsers(users.concat(user));
+
     setInputs({
       username: '',
       email: ''
     });
     nextId.current += 1;
+  };
+
+  const onRemove = (id) => {
+    setUsers(users.filter(user => user.id !==id));
+  }
+
+  const onToggle = id => {
+    setUsers(
+      users.map(user =>
+        user.id === id ? { ...user, active: !user.active } : user
+      )
+    );
   };
 
   return (
@@ -59,7 +75,7 @@ function App() {
       onChange={onChange}
       onCreate={onCreate}
     />
-    <UserList users={users} />
+    <UserList users={users} onRemove={onRemove} onToggle={onToggle} />
     </>
   );
 }
