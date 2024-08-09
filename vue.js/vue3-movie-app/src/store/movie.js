@@ -34,10 +34,10 @@ export default {
 
   // Vue.js methods 옵션과 유사합니다.
   // 변이(Mutations)가 아닌 나머지 모든 로직을 관리합니다.
-  // 비동기로 동작합니다.2222222222222222
+  // 비동기로 동작합니다.
   actions: {
     async searchMovies({ state, commit }, payload) {
-      const { title, type, number, year } = payload카뷰
+      const { title, type, number, year } = payload
       const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY
 
       const res = await axios.get(
@@ -67,4 +67,4 @@ export default {
       }
     }
   }
-
+}
