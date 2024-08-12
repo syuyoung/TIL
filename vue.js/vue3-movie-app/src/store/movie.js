@@ -9,7 +9,7 @@ export default {
   // 상태(State)는 함수로 만들어서 객체 데이터를 반환해야 가변 이슈(데이터 불변성)가 발생하지 않습니다!
   state: () => ({
     movies: [],
-    message: '',
+    message: 'Search for the movie title!',
     loading: false
   }),
   // Vue.js computed 옵션과 유사합니다.
@@ -37,34 +37,69 @@ export default {
   // 비동기로 동작합니다.
   actions: {
     async searchMovies({ state, commit }, payload) {
-      const { title, type, number, year } = payload
-      const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY
+      if (state.loading) return
 
-      const res = await axios.get(
-        `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${title}&type=${type}&y=${year}&page=1`
-      )
-
-      const { Search, totalResults } = res.data
       commit('updateState', {
-        movies: _uniqBy(Search, 'imdbID')
+        message: '',
+        loading: true
       })
 
-      const total = parseInt(totalResults, 10)
-      const pageLength = Math.ceil(total / 10)
+      try {
+        const res = await _fetchMovie({
+          ...payload,
+          page: 1
+        })
 
-      // 추가 요청!
-      if (pageLength > 1) {
-        for (let page = 2; page <= pageLength; page += 1) {
-          if (page > number / 10) break
-          const res = await axios.get(
-            `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${title}&type=${type}&y=${year}&page=${page}`
-          )
-          const { Search } = res.data
-          commit('updateState', {
-            movies: [...state.movies, ..._uniqBy(Search, 'imdbID')]
-          })
+        const { Search, totalResults } = res.data
+        commit('updateState', {
+          movies: _uniqBy(Search, 'imdbID')
+        })
+
+        const total = parseInt(totalResults, 10)
+        const pageLength = Math.ceil(total / 10)
+
+        // 추가 요청!
+        if (pageLength > 1) {
+          for (let page = 2; page <= pageLength; page += 1) {
+            if (page > payload.number / 10) break
+            const res = await _fetchMovie({
+              ...payload,
+              page: 1
+            })
+            const { Search } = res.data
+            commit('updateState', {
+              movies: [...state.movies, ..._uniqBy(Search, 'imdbID')]
+            })
+          }
         }
+      } catch (message) {
+        commit('updateState', {
+          movies: [],
+          message
+        })
+      } finally {
+        commit('updateState', { loading: false })
       }
     }
   }
+}
+
+function _fetchMovie(payload) {
+  const { title, type, year, page } = payload
+  const OMDB_API_KEY = import.meta.env.VITE_OMDB_API_KEY
+  const url = `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&s=${title}&type=${type}&y=${year}&page=${page}`
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => {
+        if (res.data.Error) {
+          reject(res.data.Error)
+        }
+        resolve(res)
+      })
+      .catch((err) => {
+        reject(err.message)
+      })
+  })
 }
