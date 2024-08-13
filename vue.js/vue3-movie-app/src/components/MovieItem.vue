@@ -52,6 +52,7 @@ defineProps({
     .year {
       color: $primary;
     }
+
     .title {
       color: $white;
       white-space: nowrap;
