@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div :class="{ 'no-result': !movies.length }" class="inner">
-      <div v-if="loading" class="spinner-border text-primary"></div>
+      <TheLoader v-if="loading" />
       <div v-if="message" class="message">{{ message }}</div>
       <div v-else class="movies">
         <MovieItem v-for="movie in movies" :key="movie.imdbID" :movie="movie" />
@@ -15,6 +15,7 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 
 import MovieItem from '@/components/MovieItem.vue'
+import TheLoader from '@/components/TheLoader.vue'
 
 const store = useStore()
 const movies = computed(() => store.state.movie.movies)

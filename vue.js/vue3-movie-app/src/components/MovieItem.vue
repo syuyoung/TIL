@@ -1,18 +1,61 @@
 <template>
-  <div :style="{ backgroundImage: `url(${movie.Poster})` }" class="movie">
+  <RouterLink
+    :to="`/movie/${movie.imdbID}`"
+    :style="{ backgroundImage: `url(${movie.Poster})` }"
+    class="movie"
+  >
+    <TheLoader v-if="imageLoading" :size="1.5" absolute />
     <div class="info">
       <div class="year">{{ movie.Year }}</div>
       <div class="title">{{ movie.Title }}</div>
     </div>
-  </div>
+  </RouterLink>
 </template>
 
 <script setup>
-defineProps({
+import { onMounted, ref, getCurrentInstance } from 'vue'
+import TheLoader from '@/components/TheLoader.vue'
+
+const imageLoading = ref(true)
+
+const props = defineProps({
   movie: {
     type: Object,
     default: () => ({})
   }
+})
+
+// function init() {
+//   const img = document.createElement('img')
+//   img.src = props.movie.Poster
+//   img.addEventListener('load', () => {
+//     imageLoading.value = false
+//   })
+// }
+
+// methods: {
+//   async init() {
+//     await this.$loadImage(this.movie.poster)
+//     this.imageLoading = false
+//   }
+// }
+
+async function init() {
+  // Vue 인스턴스의 글로벌 프로퍼티에 접근하기 위해 getCurrentInstance 사용
+  const { $loadImage } = getCurrentInstance().appContext.config.globalProperties
+  const poster = props.movie.Poster
+  if (!poster || poster === 'N/A') {
+    imageLoading.value = false
+  } else {
+    // 비동기로 이미지 로드
+    await $loadImage(poster)
+    // 이미지 로딩 상태 업데이트
+    imageLoading.value = false
+  }
+}
+
+onMounted(() => {
+  init()
 })
 </script>
 
